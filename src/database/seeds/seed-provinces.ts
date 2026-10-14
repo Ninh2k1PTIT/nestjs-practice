@@ -23,7 +23,7 @@ async function bootstrap() {
   });
 
   try {
-    const filePath = join(process.cwd(), 'province.json');
+    const filePath = join(process.cwd(), 'src/database/json/province.json');
     const data = JSON.parse(readFileSync(filePath, 'utf8')) as ProvinceJson;
 
     const provinces: Partial<Province>[] = Object.values(data).map((item) => ({
