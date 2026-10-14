@@ -1,11 +1,15 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { SnakeNamingStrategy } from './common/database/snake-naming.strategy';
+import { LoggingInterceptor } from './interceptors/logging/logging.interceptor';
+import { LoggerMiddleware } from './middlewares/logger/logger.middleware';
 import { ProvincesModule } from './modules/provinces/provinces.module';
+import { RequestLogsModule } from './modules/request-logs/request-logs.module';
 import { UsersModule } from './modules/users/users.module';
 import { WardsModule } from './modules/wards/wards.module';
-import { SnakeNamingStrategy } from './common/database/snake-naming.strategy';
 
 @Module({
   imports: [
@@ -23,8 +27,16 @@ import { SnakeNamingStrategy } from './common/database/snake-naming.strategy';
     UsersModule,
     ProvincesModule,
     WardsModule,
+    RequestLogsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
