@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsInt, Min } from 'class-validator';
+import { IsDate, IsInt, IsOptional, Min } from 'class-validator';
 
 export class PaginatedRequestDto {
   @Type(() => Number)
@@ -11,4 +11,24 @@ export class PaginatedRequestDto {
   @IsInt()
   @Min(1)
   size: number = 10;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  createdAtFrom?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  createdAtTo?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  updatedAtFrom?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  updatedAtTo?: Date;
 }

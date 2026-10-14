@@ -1,8 +1,12 @@
 import { NotFoundException } from '@nestjs/common';
 import {
+  Between,
   DeepPartial,
   FindManyOptions,
+  FindOperator,
   FindOptionsWhere,
+  LessThanOrEqual,
+  MoreThanOrEqual,
   ObjectLiteral,
   Repository,
 } from 'typeorm';
@@ -52,7 +56,24 @@ export abstract class BaseService<
       ...options,
       skip: (query.page - 1) * query.size,
       take: query.size,
+      where: {
+        ...options.where,
+        createdAt: this.dateRange(query.createdAtFrom, query.createdAtTo),
+        updatedAt: this.dateRange(query.updatedAtFrom, query.updatedAtTo),
+      } as FindOptionsWhere<Entity>,
     });
     return new PaginatedResponseDto(items, count, query);
+  }
+
+  private dateRange(from?: Date, to?: Date) {
+    if (from && to) {
+      return Between(from, to);
+    }
+    if (from) {
+      return MoreThanOrEqual(from);
+    }
+    if (to) {
+      return LessThanOrEqual(to);
+    }
   }
 }

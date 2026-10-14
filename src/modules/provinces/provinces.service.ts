@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import { ILike, Repository } from 'typeorm';
 import { CreateProvinceDto } from './dto/create-province.dto';
-import { SearchProvinceDto } from './dto/search-province.dto';
+import { SearchProvinceRequestDto } from './dto/search-province-request.dto';
 import { UpdateProvinceDto } from './dto/update-province.dto';
 import { Province } from './entities/province.entity';
 
@@ -20,7 +20,7 @@ export class ProvincesService extends BaseService<
     super(provincesRepository);
   }
 
-  async search(query: SearchProvinceDto) {
+  async search(query: SearchProvinceRequestDto) {
     return this.paging(query, {
       where: {
         name: query.name ? ILike(`%${query.name}%`) : undefined,
@@ -31,8 +31,6 @@ export class ProvincesService extends BaseService<
         type: query.type,
         code: query.code,
       },
-      skip: (query.page - 1) * query.size,
-      take: query.size,
     });
   }
 }

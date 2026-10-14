@@ -11,7 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { CreateProvinceDto } from './dto/create-province.dto';
-import { SearchProvinceDto } from './dto/search-province.dto';
+import { SearchProvinceRequestDto } from './dto/search-province-request.dto';
 import { UpdateProvinceDto } from './dto/update-province.dto';
 import { ProvincesService } from './provinces.service';
 
@@ -25,7 +25,7 @@ export class ProvincesController {
   }
 
   @Get()
-  search(@Query() query: SearchProvinceDto) {
+  search(@Query() query: SearchProvinceRequestDto) {
     return this.provincesService.search(query);
   }
 

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import { ILike, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { SearchUserDto } from './dto/search-user.dto';
+import { SearchUserRequestDto } from './dto/search-user-request.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
@@ -17,9 +17,9 @@ export class UsersService extends BaseService<
     super(usersRepository);
   }
 
-  search(query: SearchUserDto) {
+  search(query: SearchUserRequestDto) {
     return this.paging(query, {
-      where: query.keyword ? { name: ILike(`%${query.keyword}%`) } : {},
+      where: { name: query.name ? ILike(`%${query.name}%`) : undefined },
     });
   }
 }

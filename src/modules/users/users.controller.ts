@@ -23,7 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PaginatedUserResponse } from './dto/paginated-user-response.dto';
-import { SearchUserDto } from './dto/search-user.dto';
+import { SearchUserRequestDto } from './dto/search-user-request.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
@@ -51,7 +51,7 @@ export class UsersController {
     type: PaginatedUserResponse,
   })
   @ApiBadRequestResponse({ description: 'Tham số phân trang không hợp lệ' })
-  search(@Query() query: SearchUserDto) {
+  search(@Query() query: SearchUserRequestDto) {
     return this.usersService.search(query);
   }
 
