@@ -1,15 +1,15 @@
+import { AbstractBaseEntity } from 'src/common/entity/abstract-base.entity';
 import { User } from 'src/modules/users/entities/user.entity';
+import { Ward } from 'src/modules/wards/entities/ward.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 
 @Entity('provinces')
-export class Province {
+export class Province extends AbstractBaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -29,11 +29,8 @@ export class Province {
   code!: string;
 
   @OneToMany(() => User, (user) => user.province)
-  users!: User[];
+  users?: User[];
 
-  @CreateDateColumn()
-  createdAt!: Date;
-
-  @UpdateDateColumn()
-  updatedAt!: Date;
+  @OneToMany(() => Ward, (ward) => ward.province)
+  wards?: Ward[];
 }

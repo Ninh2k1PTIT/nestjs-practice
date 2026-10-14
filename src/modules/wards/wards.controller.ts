@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { WardsService } from './wards.service';
 import { CreateWardDto } from './dto/create-ward.dto';
 import { UpdateWardDto } from './dto/update-ward.dto';
+import { SearchWardRequestDto } from './dto/search-ward-request.dto';
 
 @Controller('wards')
 export class WardsController {
@@ -13,22 +23,22 @@ export class WardsController {
   }
 
   @Get()
-  findAll() {
-    return this.wardsService.findAll();
+  search(@Query() query: SearchWardRequestDto) {
+    return this.wardsService.search(query);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.wardsService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.wardsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWardDto: UpdateWardDto) {
-    return this.wardsService.update(+id, updateWardDto);
+  update(@Param('id') id: number, @Body() updateWardDto: UpdateWardDto) {
+    return this.wardsService.update(id, updateWardDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.wardsService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.wardsService.remove(id);
   }
 }

@@ -1,15 +1,11 @@
+import { Exclude } from 'class-transformer';
+import { AbstractBaseEntity } from 'src/common/entity/abstract-base.entity';
 import { Province } from 'src/modules/provinces/entities/province.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Ward } from 'src/modules/wards/entities/ward.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
-export class User {
+export class User extends AbstractBaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -23,11 +19,16 @@ export class User {
   province?: Province | null;
 
   @Column({ nullable: true })
+  @Exclude({ toPlainOnly: true })
   provinceId?: number | null;
 
-  @CreateDateColumn()
-  createdAt!: Date;
+  @ManyToOne(() => Ward, (ward) => ward.users, {
+    eager: true,
+    nullable: true,
+  })
+  ward?: Ward | null;
 
-  @UpdateDateColumn()
-  updatedAt!: Date;
+  @Column({ nullable: true })
+  @Exclude({ toPlainOnly: true })
+  wardId?: number | null;
 }

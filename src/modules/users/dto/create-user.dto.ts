@@ -8,4 +8,8 @@ export class CreateUserDto {
   @IsOptional()
   @IsInt()
   provinceId?: number | null;
+
+  @IsOptional()
+  @IsInt()
+  wardId?: number | null;
 }
