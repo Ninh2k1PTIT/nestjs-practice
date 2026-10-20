@@ -5,7 +5,7 @@ import { PaginatedRequestDto } from 'src/common/dto/paginated-request.dto';
 export class SearchUserRequestDto extends PaginatedRequestDto {
   @IsOptional()
   @IsString()
-  name?: string;
+  keyword?: string;
 
   @IsOptional()
   @Type(() => Number)

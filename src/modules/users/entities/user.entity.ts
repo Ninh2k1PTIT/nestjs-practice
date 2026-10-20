@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { AbstractBaseEntity } from 'src/common/entity/abstract-base.entity';
 import { Province } from 'src/modules/provinces/entities/province.entity';
 import { Ward } from 'src/modules/wards/entities/ward.entity';
@@ -9,8 +9,23 @@ export class User extends AbstractBaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  @Column({ unique: true })
+  username!: string;
+
   @Column()
-  name!: string;
+  @Exclude()
+  password!: string;
+
+  @Column()
+  firstName!: string;
+
+  @Column()
+  lastName!: string;
+
+  @Expose()
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
 
   @ManyToOne(() => Province, (province) => province.users, {
     eager: true,

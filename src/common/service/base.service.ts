@@ -52,16 +52,22 @@ export abstract class BaseService<
     query: PaginatedRequestDto,
     options: FindManyOptions<Entity> = {},
   ) {
+    const dates = {
+      createdAt: this.dateRange(query.createdAtFrom, query.createdAtTo),
+      updatedAt: this.dateRange(query.updatedAtFrom, query.updatedAtTo),
+    };
+
+    const where = Array.isArray(options.where)
+      ? options.where.map((w) => ({ ...w, ...dates }))
+      : { ...options.where, ...dates };
+
     const [items, count] = await this.repository.findAndCount({
       ...options,
       skip: (query.page - 1) * query.size,
       take: query.size,
-      where: {
-        ...options.where,
-        createdAt: this.dateRange(query.createdAtFrom, query.createdAtTo),
-        updatedAt: this.dateRange(query.updatedAtFrom, query.updatedAtTo),
-      } as FindOptionsWhere<Entity>,
+      where: where as FindOptionsWhere<Entity>[],
     });
+    
     return new PaginatedResponseDto(items, count, query);
   }
 

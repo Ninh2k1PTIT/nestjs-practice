@@ -1,5 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,29 +10,41 @@ import { ProvincesModule } from './modules/provinces/provinces.module';
 import { RequestLogsModule } from './modules/request-logs/request-logs.module';
 import { UsersModule } from './modules/users/users.module';
 import { WardsModule } from './modules/wards/wards.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '1',
-      database: 'postgres',
-      synchronize: true,
-      autoLoadEntities: true,
-      namingStrategy: new SnakeNamingStrategy(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        host: config.get('DB_HOST'),
+        port: config.get<number>('DB_PORT'),
+        username: config.get('DB_USERNAME'),
+        password: config.get('DB_PASSWORD'),
+        database: config.get('DB_NAME'),
+        synchronize: true,
+        autoLoadEntities: true,
+        namingStrategy: new SnakeNamingStrategy(),
+      }),
     }),
     UsersModule,
     ProvincesModule,
     WardsModule,
     RequestLogsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
 })
 export class AppModule implements NestModule {

@@ -10,7 +10,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Request, Response } from 'express';
 import { Observable, tap } from 'rxjs';
-import { SkipLog } from 'src/common/decorators/skip-log/skip-log.decorator';
+import { SkipLog } from 'src/common/decorators/skip-log.decorator';
 import { RequestLogsService } from 'src/modules/request-logs/request-logs.service';
 
 @Injectable()
